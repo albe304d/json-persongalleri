@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Persongalleri</title>
+
+    <style>
+      section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      }
+      img {
+        max-width: 100%;
+      }
+      article {
+        border: 1px solid black;
+        padding: 10px;
+        margin: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Persongalleri</h1>
+    <nav>
+      <button data-troende="alle" class="valgt">Alle</button>
+      <button data-troende="ja">Troende</button>
+      <button data-troende="nej">Ikke troende</button>
+      <button data-troende="tvivler">Tvivler</button>
+    </nav>
+    <section>
+      <template>
+        <article id="liste">
+          <img src="" alt="" />
+          <h2 class="navn"></h2>
+          <p class="email"></p>
+        </article>
+      </template>
+    </section>
+    <script>
+      const header = document.querySelector("header h1");
+      const container = document.querySelector("section");
+      const temp = document.querySelector("template");
+
+      const url = "https://persongalleri-5d3e.restdb.io/rest/persongalleri ";
+      const key = "600fe9211346a1524ff12e31";
+
+      const myHeaders = {
+        headers: {
+          "x-apikey": key,
+        },
+      };
+
+      document.addEventListener("DOMContentLoaded", start);
+      let personer;
+      let filter = "ja";
+      //første funktion der kaldes efter dom er loaded
+      function start() {
+        loadJSON();
+      }
+      async function loadJSON() {
+        const JSONData = await fetch(
+          "https://persongalleri-5d3e.restdb.io/rest/persongalleri",
+          { headers: myHeaders }
+        );
+        personer = await JSONData.json();
+        console.log("Personer", personer);
+        visPersoner();
+      }
+
+      function filtrerPersoner() {
+        filter = this.dataset.troende;
+        visPersoner();
+        header.textContent = this.textContent;
+      }
+      function visPersoner() {
+        const dest = document.querySelector("#liste"); //container til articles med en person
+        const skabelon = document.querySelector("template").content; //select indhold af html skabelon(article)
+        personer.forEach((person) => {
+          //loop igennem json(personer)
+          if (filter == person.troende) {
+            const klon = skabelon.cloneNode(true);
+            klon.querySelector(".navn").textContent =
+              person.fornavn + " " + person.efternavn;
+            klon.querySelector("img").src = "faces/" + person.profilbillede;
+            dest.appendChild(klon);
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

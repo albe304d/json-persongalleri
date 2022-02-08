@@ -144,6 +144,11 @@
               .querySelector("article")
               .addEventListener("click", () => visDetaljer(person));
             //
+            //eventlistener til klon, med link til nyt document/ny dom
+            klon.querySelector("article").addEventListener("click", () => {
+              location.href = `selvstendig-popup.html?id=${person._id}`;
+            });
+            //
             main.appendChild(klon);
           }
         });
@@ -154,11 +159,6 @@
         modal.querySelector("h2").textContent =
           person.fornavn + " " + person.efternavn;
         modal.querySelector("img").src = "faces/" + person.billede;
-
-        klon.querySelector("article").addEventListener("click", () => {
-          location.href = "http://kea.dk";
-        });
-
         //får pop up til at komme frem
         modal.style.display = "flex";
       }
